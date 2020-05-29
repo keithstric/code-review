@@ -3,7 +3,7 @@
  */
 import {NextFunction, Request, Response} from "express";
 import {logger} from "./logger";
-import {IRequestLogEntry, LogLevels} from "../../project-types";
+import {IRequestLogEntry, LogLevels} from "../../typings/project-types";
 
 /**
  * Middleware function to setup logging of all requests made to this server

@@ -3,7 +3,7 @@
  * https://www.npmjs.com/package/winston
  */
 import {createLogger, format, transports} from 'winston';
-import {LogLevels} from "../../project-types";
+import {LogLevels} from "../../typings/project-types";
 import {getDbConn} from '../arango.config';
 import {ArangoTransport} from './arango-transport';
 

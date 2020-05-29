@@ -2,7 +2,7 @@ import express, {Request, Response} from 'express';
 import authReqMiddleware from '../config/restrict-path';
 import {ReviewsController} from '../controllers/reviews.controller';
 import {deleteVertex} from '../helpers/db-utils';
-import {DocCollections, NamedGraphs} from '../project-types';
+import {DocCollections, NamedGraphs} from '../typings/project-types';
 
 export const reviewRouter = express.Router();
 

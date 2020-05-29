@@ -2,7 +2,7 @@ import {Branch, Clone, Commit, Reference, Repository} from 'nodegit';
 import path from 'path';
 import {logger} from '../config/logger/logger';
 import {RawCRRepository} from '../models/repository';
-import {DocCollections, EdgeTraversalDirections, NamedGraphs} from '../project-types';
+import {DocCollections, EdgeTraversalDirections, NamedGraphs} from '../typings/project-types';
 import {getConnectedVertices, getVertexByPropertyName} from './db-utils';
 
 /**

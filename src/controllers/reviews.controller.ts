@@ -23,7 +23,7 @@ import {RawPerson} from '../models/person';
 import {RawCRRepository} from '../models/repository';
 import {RawReview, Review} from '../models/review';
 import {RawVertex} from '../models/vertex';
-import {DocCollections, EdgeCollections, EdgeTraversalDirections, NamedGraphs} from '../project-types';
+import {DocCollections, EdgeCollections, EdgeTraversalDirections, NamedGraphs} from '../typings/project-types';
 import {VertexController} from './vertex.controller';
 import * as gitKit from 'nodegit-kit';
 

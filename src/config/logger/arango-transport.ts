@@ -1,7 +1,7 @@
 import {aql, Database} from 'arangojs';
 import winston, {LogEntry} from 'winston';
 import {createVertex} from '../../helpers/db-utils';
-import {DocCollections, IArangoDbLogQueryOptions, LogLevels} from '../../project-types';
+import {DocCollections, IArangoDbLogQueryOptions, LogLevels} from '../../typings/project-types';
 import {getDbConn} from '../arango.config';
 import Transport from 'winston-transport';
 

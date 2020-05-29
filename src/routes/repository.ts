@@ -4,7 +4,7 @@ import authReqMiddleware from '../config/restrict-path';
 import {RepositoryController} from '../controllers/repository.controller';
 import {getConnectedVertices, getVerticesByType} from '../helpers/db-utils';
 import {getPaginationParams} from '../helpers/url-utils';
-import {DocCollections, EdgeTraversalDirections, NamedGraphs} from '../project-types';
+import {DocCollections, EdgeTraversalDirections, NamedGraphs} from '../typings/project-types';
 
 export const repositoryRouter = express.Router();
 const controller = new RepositoryController();

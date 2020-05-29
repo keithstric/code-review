@@ -1,4 +1,4 @@
-import {LogLevels} from './project-types';
+import {LogLevels} from './typings/project-types';
 import {getDbConn} from './config/arango.config';
 import {initPassport} from './config/passport';
 import {requestLogger} from './config/logger/request-logger-middleware';

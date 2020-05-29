@@ -7,7 +7,7 @@ import {getDbConn} from '../config/arango.config';
 import express, {Request, Response} from 'express';
 import {Database, aql} from 'arangojs';
 import {getPaginationParams} from '../helpers/url-utils';
-import {DocCollections} from '../project-types';
+import {DocCollections} from '../typings/project-types';
 
 const db: Database = getDbConn();
 

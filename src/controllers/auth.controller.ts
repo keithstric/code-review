@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express';
 import passport from 'passport';
-import {DocCollections} from '../project-types';
+import {DocCollections} from '../typings/project-types';
 import {VertexController} from './vertex.controller';
 import {getDbConn} from '../config/arango.config';
 import {logger} from '../config/logger/logger';

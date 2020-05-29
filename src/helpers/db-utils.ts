@@ -1,7 +1,7 @@
 import {aql, Database} from 'arangojs';
 import {getDbConn} from '../config/arango.config';
 import {logger} from '../config/logger/logger';
-import {DocCollections, EdgeCollections, EdgeTraversalDirections, NamedGraphs} from '../project-types';
+import {DocCollections, EdgeCollections, EdgeTraversalDirections, NamedGraphs} from '../typings/project-types';
 
 const db: Database = getDbConn();
 

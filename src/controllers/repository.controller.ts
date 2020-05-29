@@ -3,7 +3,7 @@ import rimraf from 'rimraf';
 import {deleteVertex, getConnectedVertices, getVertexByPropertyName} from '../helpers/db-utils';
 import {getLocalNgRepository} from '../helpers/git-utils';
 import {RawCRRepository} from '../models/repository';
-import {DocCollections, EdgeTraversalDirections, NamedGraphs} from '../project-types';
+import {DocCollections, EdgeTraversalDirections, NamedGraphs} from '../typings/project-types';
 import {VertexController} from './vertex.controller';
 
 export class RepositoryController extends VertexController {

@@ -1,5 +1,5 @@
 import {getConnectedVertices} from '../helpers/db-utils';
-import {DocCollections, EdgeTraversalDirections, NamedGraphs} from '../project-types';
+import {DocCollections, EdgeTraversalDirections, NamedGraphs} from '../typings/project-types';
 import {CRBranch, RawCRBranch} from './branch';
 import {Person, RawPerson} from './person';
 import {RawCRRepository} from './repository';
