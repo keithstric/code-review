@@ -1,0 +1,26 @@
+# compiled output
+/dist
+
+# dependencies
+/node_modules
+
+# environment files
+.env
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode
+
+# Debug
+npm-debug.log
+yarn-error.log
+
+# System files
+.DS_Store
+Thumbs.db

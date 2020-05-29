@@ -1,0 +1,19 @@
+<div class="reviews-container">
+  <app-page-breadcrumb-header
+    (addButtonClick)="addReviewClick()"
+    [showAddButton]="true">
+  </app-page-breadcrumb-header>
+  <div *ngIf="!reviews || !reviews.length" class="message-container">
+    <span class="message">There are no reviews. Maybe you should add one.</span>
+  </div>
+  <div class="grid-container">
+    <app-review-card
+      *ngFor="let review of reviews"
+      class="review-card"
+      (deleteEvt)="onDeletReview(review)"
+      (editEvt)="onEditReview(review)"
+      (initiateReviewEvt)="onInitReview(review)"
+      [review]="review">
+    </app-review-card>
+  </div>
+</div>

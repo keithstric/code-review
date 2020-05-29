@@ -1,0 +1,40 @@
+version: '2.1'
+
+services:
+  arango:
+    image: arangodb
+    volumes:
+      - ./arangodb/data:/var/lib/arangodb3
+      - ./arangodb/apps-data:/var/lib/arangodb3-apps
+    environment:
+      ARANGO_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    links:
+      - code-review
+  code-review:
+    build: .
+    command: sh -c "npm install && npm run watch"
+    volumes:
+      - ./dist:/usr/code-review/dist
+      - ./src:/usr/code-review/src
+      - ./client:/usr/code-review/client
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_ROOT_USER: ${DB_ROOT_USER}
+      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      WEB_PORT: ${WEB_PORT}
+      WEB_LOCAL_PORT: ${WEB_LOCAL_PORT}
+      WEB_SESS_NAME: ${WEB_SESS_NAME}
+      WEB_SESS_SECRET: ${WEB_SESS_SECRET}
+      WEB_SESS_DURATION: ${WEB_SESS_DURATION}
+    ports:
+      - ${WEB_LOCAL_PORT}:${WEB_PORT}
+      - ${WEB_DEBUG_PORT}:${WEB_DEBUG_PORT}

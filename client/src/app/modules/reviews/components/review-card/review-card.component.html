@@ -1,0 +1,41 @@
+<mat-card>
+  <mat-card-title>
+    {{ review.repositoryVertexName + '/' + (review.branch?.name || review.branchName) }}
+  </mat-card-title>
+  <mat-card-subtitle>
+    <div subtitle class="flex-row">
+      <span class="reviewStatus">{{ review.status }}</span>
+      <span class="spacer"></span>
+      <span class="small-created-date">{{ review.created_date | date:'MM/dd/yyyy' }}</span>
+    </div>
+  </mat-card-subtitle>
+  <mat-card-content>
+    <div class="reviewInfoContainer">
+      <div class="flex-column">
+        <div class="flex-row">
+          <span class="label">Requestor:</span>
+          <span class="value"> {{ review.requestorFullName }}</span>
+        </div>
+        <div class="flex-row">
+          <span class="label">Reviewer:</span>
+          <span class="value"> {{ review.inviteeFullName }}</span>
+        </div>
+        <div class="flex-row notesRow">
+          <span class="label">Notes:</span>
+          <span class="value"> {{ review.notes }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-icon-button (click)="deleteClick()" title="Delete Review">
+      <mat-icon>delete_forever</mat-icon>
+    </button>
+    <button mat-icon-button (click)="editClick()" title="Edit Review">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button (click)="initiateReviewClick()" title="Start Review">
+      <mat-icon>input</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>

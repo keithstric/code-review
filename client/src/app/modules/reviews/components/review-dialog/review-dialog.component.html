@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>{{data.dialogTitle}}</h1>
+<mat-dialog-content>
+  <mat-form-field appearance="standard">
+    <mat-label>Reviewer</mat-label>
+    <mat-select [(ngModel)]="data.reviewer" name="reviewer">
+      <mat-option *ngFor="let user of userSelectOptions" [value]="user.value">
+        {{user.viewValue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field *ngIf="!data.repositoryUrl && !data.repositoryName" appearance="standard">
+    <mat-label>Repository</mat-label>
+    <mat-select [(ngModel)]="data.repositoryId" name="repositoryId" (selectionChange)="onRepoSelect()">
+      <mat-option *ngFor="let repository of repositorySelectOptions" [value]="repository.value">
+        {{repository.viewValue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field *ngIf="data.repositoryId === 'new'" appearance="standard">
+    <mat-label>Repository URL</mat-label>
+    <input matInput [(ngModel)]="data.repositoryUrl" name="repositoryUrl">
+  </mat-form-field>
+  <mat-form-field *ngIf="data.repositoryId === 'new'" appearance="standard">
+    <mat-label>Repository Name</mat-label>
+    <input matInput [(ngModel)]="data.repositoryName" name="repositoryName">
+  </mat-form-field>
+  <mat-form-field *ngIf="data.repositoryId === 'new'" appearance="standard">
+    <mat-label>Branch Name</mat-label>
+    <input matInput [(ngModel)]="data.branchName" name="branchName">
+  </mat-form-field>
+  <mat-form-field *ngIf="data.repositoryId && data.repositoryId !== 'new'" appearance="standard">
+    <mat-label>Branch</mat-label>
+    <mat-select [(ngModel)]="data.branchId" name="branch">
+      <mat-option *ngFor="let branch of branchSelectOptions" [value]="branch.value">
+        {{branch.viewValue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="standard">
+    <mat-label>Note</mat-label>
+    <textarea matInput matTextareaAutosize placeholder="A Note to the reviewer" [(ngModel)]="data.notes"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button (click)="onSubmit(data)" color="primary">Submit</button>
+</mat-dialog-actions>

@@ -1,0 +1,31 @@
+<div class="review-container">
+  <app-page-breadcrumb-header></app-page-breadcrumb-header>
+  <div class="review-info-container flex-column">
+    <div class="review-header flex-column">
+      <h2 class="header">{{review?.repositoryVertexName}}/{{review?.branch?.name}}</h2>
+      <div class="sub-header flex-row">
+        <span class="requestor">{{review?.requestorFullName}}: </span>
+        <span class="status">{{review?.status}}</span>
+        <span class="spacer"></span>
+        <span class="created-date">{{review?.created_date | date:'MM/dd/yyyy'}}</span>
+      </div>
+    </div>
+    <div class="flex-column displayRow">
+      <mat-label>Requestor Notes</mat-label>
+      <div class="requestor-notes">{{review?.notes}}</div>
+    </div>
+    <mat-form-field appearance="standard">
+      <mat-label>Reviewer Notes</mat-label>
+      <textarea matInput matTextareaAutosize placeholder="A note to the requestor" [(ngModel)]="review.reviewerNotes" name="reviewerNotes"></textarea>
+    </mat-form-field>
+  </div>
+  <div *ngIf="commits && commits.length" class="commits-container flex-column">
+    <h4>Commits in this branch</h4>
+    <div *ngFor="let commit of commits" class="flex-row commit" (click)="onCommitClick(commit)">
+      <span class="id">{{commit.id}}</span>
+      <span class="date">{{commit.date | date}}</span>
+      <span class="message">{{commit.message}}</span>
+    </div>
+  </div>
+  <div class="diff-container" [innerHtml]="diffOutputHtml"></div>
+</div>

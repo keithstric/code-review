@@ -1,0 +1,9 @@
+@import '~@angular/material/theming';
+
+:host {}
+
+mat-card {
+  height: calc(100% - 35px);
+  width: calc(100% - 35px);
+  padding: 10px;
+}

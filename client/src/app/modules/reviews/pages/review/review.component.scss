@@ -1,0 +1,50 @@
+.review-container {
+
+  .review-header {
+
+    .header {
+      margin: 0;
+    }
+
+    .sub-header {
+      opacity: 0.5;
+      font-size: 14px;
+
+      .requestor {
+        margin-right: 5px;
+      }
+
+      .status {
+        margin: 0;
+      }
+    }
+  }
+
+  .displayRow {
+    margin-top: 10px;
+
+    .requestor-notes {
+      margin-top: 5px;
+      white-space: pre-wrap;
+    }
+  }
+
+  .commits-container {
+    max-height: 100px;
+    overflow: auto;
+
+    .commit {
+      margin-bottom: 5px;
+
+      span {
+        margin-right: 10px;
+      }
+
+      &:hover {
+        cursor: pointer;
+        color: blue;
+        text-decoration: underline;
+      }
+    }
+  }
+}
