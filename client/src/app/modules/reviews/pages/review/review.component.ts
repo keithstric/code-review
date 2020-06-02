@@ -36,7 +36,7 @@ export class ReviewComponent implements OnInit {
   fetchCommits() {
     this._reviewService.fetchCommits(this.review._key).subscribe((commits) => {
       this.commits = commits;
-      console.log('this.commits=', this.commits);
+      // console.log('this.commits=', this.commits);
     });
   }
 
