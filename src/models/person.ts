@@ -6,6 +6,7 @@ export interface RawPerson extends RawVertex {
 	email: string;
 	password: string;
 	verify_password?: string;
+	avatar?: string;
 }
 
 export class Person extends Vertex implements RawPerson {

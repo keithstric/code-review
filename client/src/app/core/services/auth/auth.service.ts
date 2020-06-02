@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
 import {BehaviorSubject} from 'rxjs';
 import {ApiEndpoints, ApiMethod} from 'src/app/core/interfaces/api.interface';
 import {LocalStorageTypes} from 'src/app/core/interfaces/local-storage.interface';
@@ -11,16 +12,15 @@ import {RawUser} from '../../interfaces/user.interface';
   providedIn: 'root'
 })
 export class AuthService {
-  authData: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  authData: BehaviorSubject<RawUser> = new BehaviorSubject<RawUser>(null);
 
   constructor(
     private _http: HttpService,
     private _localStorage: LocalStorageService,
-    private _error: ErrorService
-  ) { }
-
-  subscribeAuthData() {
-    return this.authData.asObservable();
+    private _error: ErrorService,
+    private _router: Router
+  ) {
+    this.authData.next(this.getUser());
   }
 
   isAuthenticated() {

@@ -24,10 +24,6 @@
     <mat-label>Repository Name</mat-label>
     <input matInput [(ngModel)]="data.repositoryName" name="repositoryName">
   </mat-form-field>
-  <mat-form-field *ngIf="data.repositoryId === 'new'" appearance="standard">
-    <mat-label>Branch Name</mat-label>
-    <input matInput [(ngModel)]="data.branchName" name="branchName">
-  </mat-form-field>
   <mat-form-field *ngIf="data.repositoryId && data.repositoryId !== 'new'" appearance="standard">
     <mat-label>Branch</mat-label>
     <mat-select [(ngModel)]="data.branchId" name="branch">
@@ -35,6 +31,10 @@
         {{branch.viewValue}}
       </mat-option>
     </mat-select>
+  </mat-form-field>
+  <mat-form-field *ngIf="data.repositoryId === 'new' || data.branchId === 'new'" appearance="standard">
+    <mat-label>Branch Name</mat-label>
+    <input matInput [(ngModel)]="data.branchName" name="branchName">
   </mat-form-field>
   <mat-form-field appearance="standard">
     <mat-label>Note</mat-label>

@@ -108,27 +108,32 @@ export class ReviewsController extends VertexController {
 		let branch: RawCRBranch = null;
 		if (review && rawUser) {
 			try {
+				const branchName = (review.branchName || 'master').toLowerCase();
 				if (!review.repositoryId && review.repositoryUrl) {
 					const result = await this.cloneRepository(review, rawUser);
 					if (result && result.branches && result.branches.length) {
-						branch = result.branches.find(branch => branch.name.toLowerCase() === review.branchName.toLowerCase());
+						branch = result.branches.find(branch => branch.name.toLowerCase() === branchName);
 					}
 				} else if (review.repositoryId) {
 					if (review.branchId) {
 						branch = await getVertexByPropertyName('_key', review.branchId, DocCollections.BRANCHES);
-					} else if (review.branchName) {
-						const repoVert = await getVertexByPropertyName('_id', review.repositoryId, DocCollections.REPOSITORIES);
+					} else {
+						const repoVert = await getVertexByPropertyName('_key', review.repositoryId, DocCollections.REPOSITORIES);
 						const repo: Repository = await getLocalNgRepository(repoVert.path);
 						const branches: RawCRBranch[] = await getRepoBranchVertices(repo);
-						branch = branches.find(branchVert => branch.name === review.branchName);
+						branch = branches.find(branchVert => branch.name === branchName);
 						if (!branch) {
+							const repoRemote = await repo.getRemote('origin');
+							await repo.fetch(repoRemote);
+							logger.info(`Pulled repository with id: ${review.repositoryId}`);
 							await (repo as any).refreshReferences();
 							const result = await this.createRepositoryEdges(repoVert, repo, branches);
-							branch = result.branches.find(brVert => brVert.name === review.branchName);
+							branch = result.branches.find(brVert => brVert.name === branchName);
 						}
 					}
 				}
 			}catch(err) {
+				logger.error(`Error occurred getting the review branch: ${err.message}, ${err.stack}`);
 				throw err;
 			}
 		}else{
@@ -179,18 +184,19 @@ export class ReviewsController extends VertexController {
 	private async createRepositoryEdges(repoVertex: RawCRRepository, repo: Repository, knownRepoBranches?: RawCRBranch[]) {
 		if (repoVertex && repo) {
 			try {
-				const branchRefs: Reference[] = await getNgRepoBranches(repo);
+				const branchRefs: string[] = await getNgRepoBranches(repo);
 				const containsEdges: RawEdge[] = [];
 				const branches: RawCRBranch[] = knownRepoBranches || [];
 				for (let i = 0; i < branchRefs.length; i++) {
-					const branchRef: Reference = branchRefs[i];
-					const rawBranchPayload = {name: branchRef.shorthand()};
+					const branchRefName: string = branchRefs[i];
+					const rawBranchPayload = {name: getBranchNameFromNgRef(null, branchRefName)};
 					let branchVert = branches.find(rawBr => rawBr.name === rawBranchPayload.name);
 					const knownBranch = !!branchVert;
 					if (!knownBranch) {
 						branchVert = await createVertex(rawBranchPayload, DocCollections.BRANCHES);
 						const containsEdge: RawEdge = await createEdge(EdgeCollections.CONTAINS, repoVertex._id, branchVert._id);
 						containsEdges.push(containsEdge);
+						logger.info(`Added branch ${branchVert.name} to the ${repoVertex.name} repository`);
 					}
 					branches.push(branchVert);
 				}
@@ -222,6 +228,11 @@ export class ReviewsController extends VertexController {
 		}
 	}
 
+	/**
+	 * Send the commits in a review's branch
+	 * @param req {Request}
+	 * @param res {Response}
+	 */
 	async getCommits(req: Request, res: Response) {
 		const reviewKey = req.params.key;
 		try {

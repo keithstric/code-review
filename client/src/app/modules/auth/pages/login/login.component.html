@@ -6,19 +6,19 @@
       <form #loginForm class="loginForm flex-column" [formGroup]="loginData">
         <mat-form-field appearance="standard">
           <mat-label>Email Address</mat-label>
-          <input matInput placeholder="youremail@knowhere.com" type="email" [formControl]="email" name="email">
+          <input matInput placeholder="youremail@knowhere.com" type="email" [formControl]="email" name="email" (keypress)="onKeypress($event)">
           <mat-error *ngIf="email.invalid">{{getErrorMessage('email')}}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="standard">
           <mat-label>Password</mat-label>
-          <input matInput placeholder="Password" type="password" [formControl]="password" name="password">
+          <input matInput placeholder="Password" type="password" [formControl]="password" name="password" (keypress)="onKeypress($event)">
           <mat-error *ngIf="password.invalid">{{getErrorMessage('password')}}</mat-error>
         </mat-form-field>
       </form>
     </mat-card-content>
     <mat-card-actions class="flex-row flex-content-end">
       <button mat-raised-button (click)="loginForm.reset()">Reset</button>
-      <button mat-raised-button color="primary" (click)="login()">Login</button>
+      <button mat-raised-button color="primary" (click)="loginClick()">Login</button>
     </mat-card-actions>
     <mat-card-footer class="flex-row flex-content-center">
       <a href="/auth/register" title="Register">Register</a>

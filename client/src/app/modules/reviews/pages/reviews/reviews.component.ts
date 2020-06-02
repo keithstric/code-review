@@ -50,6 +50,7 @@ export class ReviewsComponent implements OnInit {
       if (review && Object.keys(review).length > 0) {
         review.requestor = this._auth.getUser()._id;
         review.repositoryId = review.repositoryId === 'new' ? null : review.repositoryId;
+        review.branchId = review.branchId === 'new' ? null : review.branchId;
         this._reviews.createReview(review);
       }
     });

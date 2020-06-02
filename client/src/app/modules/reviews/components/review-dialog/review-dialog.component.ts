@@ -50,7 +50,8 @@ export class ReviewDialogComponent implements OnInit {
 
   listenToBranches() {
     this._reviews.branchOptionsSub.subscribe((branches: MaterialSelectOption[]) => {
-      this.branchSelectOptions = branches;
+      const options: MaterialSelectOption[] = [{value: 'new', viewValue: 'New'}, ...branches];
+      this.branchSelectOptions = options;
     });
   }
 

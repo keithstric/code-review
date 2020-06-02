@@ -29,11 +29,12 @@ export const cloneNgRepository = async (url: string, name: string) => {
  */
 export const getNgRepoBranches = async (repo: Repository) => {
 	if (repo) {
-		const repoBranches: Reference[] = [];
+		const repoBranches: string[] = [];
 		try {
-			const refs = await repo.getReferences();
+			const refs = await repo.getReferenceNames(Reference.TYPE.LISTALL);
+			console.log('refs=', refs);
 			if (refs && refs.length) {
-				const branchRefs = refs.filter(ref => ref.isBranch());
+				const branchRefs = refs.filter(ref => ref.includes('remote'));
 				if (branchRefs && branchRefs.length) {
 					for (let i = 0; i < branchRefs.length; i++) {
 						repoBranches.push(branchRefs[i]);
@@ -52,11 +53,15 @@ export const getNgRepoBranches = async (repo: Repository) => {
 /**
  * Get the branch name from a Reference name
  * @param ref {Reference}
+ * @param refName {string}
  * @returns {string}
  */
-export const getBranchNameFromNgRef = (ref: Reference) => {
-	if (ref) {
-		const fullName = ref.name();
+export const getBranchNameFromNgRef = (ref?: Reference, refName?: string) => {
+	let fullName = '';
+	if (ref && !refName) {
+		return ref.shorthand();
+	}else if (!ref && refName) {
+		fullName = refName;
 		const fullNameArr = fullName.split('/');
 		return fullNameArr.pop();
 	}
@@ -84,12 +89,10 @@ export const getLocalNgRepository = async (path: string) => {
  */
 export const getRepoBranchVertices = async (repo?: Repository, repositoryPath?: string, repositoryId?: string) => {
 	if (repo || repositoryPath || repositoryId) {
-		let repoPath = repositoryPath;
-		if (repo && !repositoryPath) {
-			repoPath = repo.path();
-		}
+		let repoPath = repo ? repo.path() : repositoryPath ? repositoryPath : null;
 		try {
 			if (repoPath && !repositoryId) {
+				repoPath = repoPath.substring(0, repoPath.lastIndexOf('/.git'));
 				const repoVert: RawCRRepository = await getVertexByPropertyName('path', repoPath, DocCollections.REPOSITORIES);
 				repositoryId = repoVert._id;
 			}
