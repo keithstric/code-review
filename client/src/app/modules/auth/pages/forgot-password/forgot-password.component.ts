@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthService} from 'src/app/core/services/auth/auth.service';
 import {RawUser} from 'src/app/core/interfaces/user.interface';
+import {UiService} from '../../../../core/services/ui/ui.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -19,7 +20,8 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   constructor(
     private _formBuilder: FormBuilder,
     private _auth: AuthService,
-    private _router: Router
+    private _router: Router,
+    private _ui: UiService
   ) { }
 
   ngOnInit(): void {
@@ -46,7 +48,10 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   }
 
   onUpdateClick() {
-    console.log('onUpdateClick')
-    this._auth.forgotPassword(this.forgotPwForm.getRawValue());
+    this._auth.forgotPassword(this.forgotPwForm.getRawValue())
+      .subscribe((resp: RawUser) => {
+        this._router.navigateByUrl('/auth/login');
+        this._ui.notifyUser(`Reset of forgotten password successful`);
+      });
   }
 }

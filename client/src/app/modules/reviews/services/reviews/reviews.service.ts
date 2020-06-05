@@ -6,6 +6,7 @@ import {Repository} from '../../../../core/interfaces/repository.interface';
 import {Review} from '../../../../core/interfaces/review.interface';
 import {RawUser} from '../../../../core/interfaces/user.interface';
 import {HttpService} from '../../../../core/services/http/http.service';
+import {UiService} from '../../../../core/services/ui/ui.service';
 import {ReviewModel} from '../../models/Review.model';
 
 @Injectable({
@@ -21,7 +22,8 @@ export class ReviewsService {
   branchOptionsSub: BehaviorSubject<MaterialSelectOption[]> = new BehaviorSubject<MaterialSelectOption[]>([]);
 
   constructor(
-    private _http: HttpService
+    private _http: HttpService,
+    private _ui: UiService
   ) { }
 
   createReview(review: Review) {
@@ -39,10 +41,11 @@ export class ReviewsService {
 
   deleteReview(review: Review) {
     const url = `${ApiEndpoints.REVIEWS}/${review._key}`;
-    this._http.requestCall(url, ApiMethod.DELETE).subscribe((review: Review) => {
-      console.log('Deleted review', review);
-      this.fetchReviews();
-    });
+    this._http.requestCall(url, ApiMethod.DELETE)
+      .subscribe((delResult: {deletedEdges: any[], deletedVertex: Review}) => {
+        this._ui.notifyUser(`Review ${delResult.deletedVertex._key} successfully deleted`);
+        this.fetchReviews();
+      });
   }
 
   fetchReviews() {

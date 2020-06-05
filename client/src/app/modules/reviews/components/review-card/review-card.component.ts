@@ -29,11 +29,10 @@ export class ReviewCardComponent implements OnInit {
       }
     });
     dialogRef.afterClosed().subscribe((resp: boolean) => {
-      console.log('confirm dialog close, resp=', resp);
       if (resp) {
         this.deleteEvt.emit(this.review);
       }
-    })
+    });
   }
 
   editClick() {

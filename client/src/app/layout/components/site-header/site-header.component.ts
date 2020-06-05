@@ -25,7 +25,6 @@ export class SiteHeaderComponent implements OnInit, OnDestroy {
     private _header: HeaderService,
     private _storage: LocalStorageService,
     private _router: Router,
-    private _http: HttpService,
     private _auth: AuthService
   ) { }
 
@@ -52,9 +51,8 @@ export class SiteHeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this._http.requestCall(ApiEndpoints.LOGOUT, ApiMethod.GET)
+    this._auth.logout()
       .subscribe((args) => {
-        this._storage.removeItem(LocalStorageTypes.SESSION, 'user');
         this._router.navigateByUrl('/auth/login');
       });
   }

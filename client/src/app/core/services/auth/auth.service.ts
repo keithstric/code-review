@@ -41,6 +41,15 @@ export class AuthService {
       }));
   }
 
+  logout() {
+    return this._http.requestCall(ApiEndpoints.LOGOUT, ApiMethod.GET)
+      .pipe(tap((args) => {
+        this._localStorage.removeItem(LocalStorageTypes.SESSION, 'user');
+        this.authData.next(null);
+        return args;
+      }));
+  }
+
   register(registrationData) {
     return this._http.requestCall(ApiEndpoints.REGISTER, ApiMethod.POST, registrationData)
       .pipe(tap((resp: RawUser) => {
@@ -51,10 +60,20 @@ export class AuthService {
   }
 
   changePassword(chgPwData) {
-    return this._http.requestCall(ApiEndpoints.CHANGE_PW, ApiMethod.PUT, chgPwData);
+    return this._http.requestCall(ApiEndpoints.CHANGE_PW, ApiMethod.PUT, chgPwData)
+      .pipe(tap((resp: RawUser) => {
+        this._localStorage.setItem(LocalStorageTypes.SESSION, 'user', resp);
+        this.authData.next(resp);
+        return resp;
+      }));
   }
 
   forgotPassword(forgotPwData) {
-    return this._http.requestCall(ApiEndpoints.FORGOT, ApiMethod.PUT, forgotPwData);
+    return this._http.requestCall(ApiEndpoints.FORGOT, ApiMethod.PUT, forgotPwData)
+      .pipe(tap((resp: RawUser) => {
+        this._localStorage.setItem(LocalStorageTypes.SESSION, 'user', resp);
+        this.authData.next(resp);
+        return resp;
+      }));
   }
 }

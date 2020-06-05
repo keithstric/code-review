@@ -1,12 +1,14 @@
+import {Database} from 'arangojs';
+import bcrypt from 'bcrypt';
 import {NextFunction, Request, Response} from 'express';
 import passport from 'passport';
-import {DocCollections} from '../typings/project-types';
-import {VertexController} from './vertex.controller';
 import {getDbConn} from '../config/arango.config';
 import {logger} from '../config/logger/logger';
+import {getVertexByPropertyName, updateVertex} from '../helpers/db-utils';
 import {Person, RawPerson} from '../models/person';
-import bcrypt from 'bcrypt';
-import {Database, aql} from 'arangojs';
+import {RequestError} from '../models/request-error';
+import {DocCollections} from '../typings/project-types';
+import {VertexController} from './vertex.controller';
 
 const db: Database = getDbConn();
 
@@ -93,16 +95,20 @@ export class AuthController extends VertexController {
 	 * @method {GET}
 	 */
 	logout(req: Request, res: Response) {
-		const {first_name, last_name, email} = req.user as Person;
-		req.logout();
-		req.session.destroy((err) => {
-			if (err) {
-				return res.status(500).send(err);
-			}
-			res.clearCookie(process.env.WEB_SESS_NAME);
-			logger.info(`Logged Out: ${first_name} ${last_name}: <${email}>`);
-			res.send({message: 'Success'});
-		});
+		if (req.user) {
+			const {first_name, last_name, email} = req.user as Person;
+			req.logout();
+			req.session.destroy((err) => {
+				if (err) {
+					return res.status(500).send(err);
+				}
+				res.clearCookie(process.env.WEB_SESS_NAME);
+				logger.info(`Logged Out: ${first_name} ${last_name}: <${email}>`);
+				res.send({message: 'Success'});
+			});
+		}else{
+			res.send({message: 'Not Authenticated'});
+		}
 	}
 
 	/**
@@ -163,6 +169,46 @@ export class AuthController extends VertexController {
 		}else{
 			const emailRegex: RegExp = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 			return emailRegex.test(val);
+		}
+	}
+
+	/**
+	 * Reset a forgotten password
+	 * @param requestBody {{email: string, new_password: string, verify_password: string}}
+	 */
+	async forgottenPassword(requestBody: any) {
+		if (requestBody.email) {
+			const user: RawPerson = await getVertexByPropertyName('email', requestBody.email, DocCollections.PEOPLE);
+			if (user && this.plainPasswordsMatch(requestBody.new_password, requestBody.verify_password)) {
+				const newPw = this.createPassword(requestBody.new_password);
+				return await updateVertex(user._key, DocCollections.PEOPLE, {password: newPw});
+			}else{
+				if (!user) {
+					const err = new RequestError(`User with email address ${requestBody.email} does not exist`, 400);
+					throw err;
+				}else {
+					const err = new RequestError(`Passwords do not match`, 400);
+					throw err;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Change a password
+	 * @param req
+	 */
+	async changePassword(req: Request) {
+		if (req.user) {
+			const {new_password, verify_password, password} = req.body;
+			if (this.plainPasswordsMatch(new_password, verify_password) && this.comparePassword((req.user as RawPerson), password)) {
+				const newPw = this.createPassword(new_password);
+				return updateVertex((req.user as RawPerson)._key, DocCollections.PEOPLE, {password: newPw});
+			}else{
+				throw new RequestError(`Passwords do not match`, 400);
+			}
+		}else{
+			throw new RequestError(`Not authenticated`, 401);
 		}
 	}
 
