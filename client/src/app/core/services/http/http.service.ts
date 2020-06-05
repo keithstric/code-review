@@ -16,28 +16,28 @@ export class HttpService {
     private _router: Router
   ) { }
 
-  requestCall(api: ApiEndpoints | string, method: ApiMethod, data?: any) {
-    // console.log('HttpService.requestCall, api=', api);
+  requestCall(apiUrl: ApiEndpoints | string, method: ApiMethod, data?: any) {
+    console.log('HttpService.requestCall, apiUrl=', apiUrl);
     let response;
     switch (method) {
       case ApiMethod.GET:
-        response = this._http.get(api)
+        response = this._http.get(apiUrl)
           .pipe(catchError((err) => this.handleError(err, this)));
         break;
       case ApiMethod.DELETE:
-        response = this._http.delete(api)
+        response = this._http.delete(apiUrl)
           .pipe(catchError((err) => this.handleError(err, this)));
         break;
       case ApiMethod.PATCH:
-        response = this._http.patch(api, data)
+        response = this._http.patch(apiUrl, data)
           .pipe(catchError((err) => this.handleError(err, this)));
         break;
       case ApiMethod.POST:
-        response = this._http.post(api, data)
+        response = this._http.post(apiUrl, data)
           .pipe(catchError((err) => this.handleError(err, this)));
         break;
       case ApiMethod.PUT:
-        response = this._http.put(api, data)
+        response = this._http.put(apiUrl, data)
           .pipe(catchError((err) => this.handleError(err, this)));
         break;
     }

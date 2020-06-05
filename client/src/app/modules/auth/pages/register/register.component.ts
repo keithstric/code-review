@@ -1,11 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {Subject} from 'rxjs';
 import {ApiEndpoints, ApiMethod} from 'src/app/core/interfaces/api.interface';
 import {LocalStorageTypes} from 'src/app/core/interfaces/local-storage.interface';
 import {ErrorService} from 'src/app/core/services/error/error.service';
 import {HttpService} from 'src/app/core/services/http/http.service';
 import {LocalStorageService} from 'src/app/core/services/local-storage/local-storage.service';
 import {PROJECT_NAME} from 'src/environments/environment';
+import {RawUser} from '../../../../core/interfaces/user.interface';
+import {AuthService} from '../../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -21,12 +25,14 @@ export class RegisterComponent implements OnInit {
   first_name: FormControl = new FormControl('', [Validators.required]);
   errorMsg: string;
   projectName: string = PROJECT_NAME;
+  authSub: Subject<RawUser>;
 
   constructor(
     private _formBuilder: FormBuilder,
     private _http: HttpService,
     private _error: ErrorService,
-    private _localStorage: LocalStorageService
+    private _auth: AuthService,
+    private _router: Router
   ) { }
 
   ngOnInit(): void {
@@ -74,9 +80,9 @@ export class RegisterComponent implements OnInit {
    */
   register() {
     this.errorMsg = undefined;
-    this._http.requestCall(ApiEndpoints.REGISTER, ApiMethod.POST, this.registrationData.getRawValue())
-      .subscribe((resp) => {
-        this._localStorage.setItem(LocalStorageTypes.SESSION, 'user', resp);
+    this.authSub = this._auth.register(this.registrationData.getRawValue())
+      .subscribe((resp: RawUser) => {
+        this._router.navigateByUrl('/auth/user');
       });
   }
 

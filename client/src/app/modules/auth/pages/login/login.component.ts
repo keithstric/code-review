@@ -1,27 +1,32 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
+import {Subject} from 'rxjs';
 import {ErrorService} from 'src/app/core/services/error/error.service';
 import {AuthService} from 'src/app/core/services/auth/auth.service';
 import {PROJECT_NAME} from 'src/environments/environment';
+import {RawUser} from '../../../../core/interfaces/user.interface';
+import {UiService} from '../../../../core/services/ui/ui.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['../auth-shared-styles.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginData: FormGroup;
   email: FormControl = new FormControl('', [Validators.required, Validators.email]);
   password: FormControl = new FormControl('', [Validators.required]);
   errorMsg: string;
   projectName: string = PROJECT_NAME;
+  authSub: Subject<RawUser>;
 
   constructor(
     private _formBuilder: FormBuilder,
     private _error: ErrorService,
     private _auth: AuthService,
-    private _router: Router
+    private _router: Router,
+    private _ui: UiService
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +38,10 @@ export class LoginComponent implements OnInit {
       this._router.navigateByUrl('/');
     }
     this.buildFormGroup();
+  }
+
+  ngOnDestroy() {
+    this.authSub ? this.authSub.unsubscribe() : null;
   }
 
   /**
@@ -68,9 +77,9 @@ export class LoginComponent implements OnInit {
    * Perform the authentication
    */
   loginClick() {
-    this._auth.login(this.loginData.getRawValue())
-      .then((resp) => {
-        console.log('login response=', resp);
+    this.authSub = this._auth.login(this.loginData.getRawValue())
+      .subscribe((resp: RawUser) => {
+        this._ui.notifyUser(`Welcome to ${PROJECT_NAME}!`);
         this._router.navigateByUrl('/');
       });
   }

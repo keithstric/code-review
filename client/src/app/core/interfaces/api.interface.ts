@@ -14,6 +14,8 @@ export enum ApiEndpoints {
   LOGIN = '/api/auth/login',
   REGISTER = '/api/auth/register',
   LOGOUT = '/api/auth/logout',
+  FORGOT = '/api/auth/forgot',
+  CHANGE_PW = '/api/auth/changepw',
   REPOSITORIES = '/api/repositories',
   REVIEWS = '/api/reviews',
   PEOPLE = '/api/people'
